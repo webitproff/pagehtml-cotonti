@@ -140,6 +140,8 @@ datas/html/page/
 Замените (или добавьте) функцию целиком:
 
 ```php
+
+
 /**
  * Обрабатывает текст страницы.
  * Если текст начинается с "include:" — безопасно читает указанный файл
@@ -154,13 +156,16 @@ datas/html/page/
 function cot_readraw($text)
 {
 	// 1. Если это не include-директива — возвращаем текст как есть
-	if (mb_substr($text, 0, 8) !== 'include:') {
-		return $text;
+	// Снимаем HTML-обёртку редактора (<p>, <h1> и т.п.), ищем include: уже в «чистом» тексте
+	$normalized = trim(strip_tags($text));
+	if (mb_substr($normalized, 0, 8) !== 'include:') {
+		return $text; // не директива — отдаём исходный HTML как есть
 	}
 
 	// 2. Извлекаем относительный путь после "include:"
 	//    Ограничиваем длину 255 символами (как было раньше)
-	$relative = trim(mb_substr($text, 8, 255));
+
+	$relative = trim(mb_substr($normalized, 8, 255));
 
 	// 3. Базовая директория: datas/html/page/
 	$baseDir = realpath((Cot::$cfg['datas_dir'] ?? 'datas') . '/html/page');
@@ -190,7 +195,7 @@ function cot_readraw($text)
 		$realPath === false ||
 		!is_file($realPath) ||
 		!is_readable($realPath) ||
-		strpos($realPath, $baseDir) !== 0          // path traversal / symlink escape
+		strpos($realPath, $baseDir) !== 0          // защита от path traversal и symlink escape
 	) {
 		return 'File not found';
 	}
@@ -205,6 +210,7 @@ function cot_readraw($text)
 	$content = file_get_contents($realPath);
 	return $content === false ? 'File not found' : $content;
 }
+
 ```
 
 ### 2.3. Вызов в `page.main.php`
@@ -214,12 +220,11 @@ function cot_readraw($text)
 Фрагмент обработки `redir:` / `include:` должен выглядеть так (логика `redir:` может отличаться на вашей сборке; важна ветка `include:`):
 
 ```php
+
 if (mb_substr($pag['page_text'], 0, 6) == 'redir:') {
 	$env['status'] = '303 See Other';
 	$redir = trim(str_replace('redir:', '', $pag['page_text']));
-	$sql_page_update = Cot::$db->query(
-		"UPDATE $db_pages SET page_filecount=page_filecount+1 WHERE page_id=$id"
-	);
+	$sql_page_update = Cot::$db->query("UPDATE $db_pages SET page_filecount=page_filecount+1 WHERE page_id=$id");
 	if (preg_match('#^(http|ftp)s?://#', $redir)) {
 		if (!cot_url_check($redir)) {
 			cot_log('Blocked off-site page redir: target', 'sec', 'page', 'error');
@@ -230,9 +235,10 @@ if (mb_substr($pag['page_text'], 0, 6) == 'redir:') {
 		header('Location: ' . COT_ABSOLUTE_URL . ltrim($redir, '/'));
 	}
 	exit;
-} elseif (mb_substr($pag['page_text'], 0, 8) == 'include:') {
+} elseif (mb_substr(trim(strip_tags($pag['page_text'])), 0, 8) === 'include:') {
 	$pag['page_text'] = cot_readraw($pag['page_text']);
 }
+
 ```
 
 Раньше типичный вызов был:
