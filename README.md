@@ -10,6 +10,15 @@
 
 ---
 
+<img width="1920" height="1080" alt="Page HTML Files (pagehtml) для Cotonti 2026-11-07 15 59 56 (4)" src="https://github.com/user-attachments/assets/a002a527-d668-44e0-89ff-99f57249ebdb" />
+<img width="1920" height="1080" alt="Page HTML Files (pagehtml) для Cotonti 2026-11-07 15 59 56 (5)" src="https://github.com/user-attachments/assets/28ca468b-ef35-459b-a4c8-2ad1a1a7a5e2" />
+<img width="1920" height="1080" alt="Page HTML Files (pagehtml) для Cotonti 2026-11-07 15 59 56" src="https://github.com/user-attachments/assets/8b31accd-abef-4eb6-9783-c43ba13b92be" />
+<img width="1920" height="1080" alt="Page HTML Files (pagehtml) для Cotonti 2026-11-07 15 59 56 (2)" src="https://github.com/user-attachments/assets/b5dc32b1-51f6-4fb6-aa16-606c8101db8c" />
+<img width="1920" height="1080" alt="Page HTML Files (pagehtml) для Cotonti 2026-11-07 15 59 56 (3)" src="https://github.com/user-attachments/assets/2543b084-8c70-4653-a26f-75fda94b473e" />
+
+
+---
+
 ## 📑 Оглавление
 
 1. [Overview](#1-overview)
